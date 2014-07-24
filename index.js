@@ -141,7 +141,7 @@ exports.filter = function(arr, iterator, context) {
     });
 };
 
-exports.ignore = function(list) {
+exports.ignore = function(arr) {
     var len = arr.length;
     var completed = 0;
 

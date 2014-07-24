@@ -7,7 +7,7 @@ var oath = require('../index.js');
 
 describe('ignore', function() {
     it('should ignore results from all rejected promises', function(done) {
-        oath.filter(
+        oath.ignore(
             [
                 oath.getResolved(1),
                 oath.getRejected(2),

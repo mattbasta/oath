@@ -1,6 +1,6 @@
 {
-  "name": "oath",
-  "version": "0.1.0",
+  "name": "oathjs",
+  "version": "0.1.1",
   "description": "A promise utility library",
   "main": "index.js",
   "scripts": {

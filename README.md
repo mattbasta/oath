@@ -3,10 +3,14 @@
 Oath is a utility library for promises. The methods exposed by Oath allow you
 to accomplish tasks that would ordinarily require a non-trivial amount of work.
 
+```
+npm install oathjs
+```
+
 [![Build Status](https://travis-ci.org/mattbasta/oath.svg?branch=master)](https://travis-ci.org/mattbasta/oath)
 
 ```js
-var oath = require('oath');
+var oath = require('oathjs');
 
 // Pass functions that return promises to rate limit
 oath.rateLimit(2, [

@@ -31,7 +31,7 @@ exports.getRejected = function(val) {
 
 exports.all = Promise.all.bind(Promise);
 
-exports.first = argsOrArr(function(arr) {
+exports.first = exports.race = argsOrArr(function(arr) {
     return new Promise(function(resolve, reject) {
         for (var i = 0; i < arr.length; i++) {
             arr[i].then(resolve, reject);

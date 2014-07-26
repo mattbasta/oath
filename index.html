@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Oath.js</title>
+<style>
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+*, *:before, *:after {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  clear: both;
+  padding: 0;
+  margin: 0;
+}
+body {
+  background: #fafafa;
+  font-family: sans-serif;
+  padding-left: 200px;
+}
+header {
+  background: #667580;
+  bottom: 0;
+  margin-left: -200px;
+  position: fixed;
+  top: 0;
+  width: 200px;
+}
+header h1 {
+  color: #fff;
+  text-align: center;
+}
+
+nav li {
+  list-style: none;
+}
+nav li a {
+  background: #8897A2;
+  color: #222;
+  display: block;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 1px;
+  padding: 0 5px;
+  text-decoration: none;
+}
+nav li a:hover {
+  text-decoration: underline;
+}
+nav nav a {
+  background: #99A8B3;
+  padding-left: 10px;
+}
+
+h1, h2, h3 {
+  font-family: Roboto Slab;
+  margin: 0.25em 0;
+}
+
+h1 {font-size: 3em;}
+h2 {font-size: 2.5em;}
+h3 {font-size: 2em;}
+
+main {
+  padding: 15px;
+}
+main > * {
+  width: 45%;
+  margin-right: 5%;
+}
+p, ul, ol, pre.inline {
+  clear: left;
+  float: left;
+  margin: 0 0 0.5em;
+}
+
+pre:not(.inline) {
+  float: right;
+}
+pre.inline {
+  margin: 15px 0;
+}
+pre code {
+  border-radius: 4px;
+}
+
+ul, ol {
+  padding: 15px 0 15px 20px;
+}
+ul li,
+ol li {
+  margin-bottom: 5px;
+}
+
+p code,
+li code {
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 2px;
+  font-size: 1em;
+  padding: 2px;
+  vertical-align: middle;
+}
+
+</style>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css">
+</head>
+<body>
+  <header>
+    <h1>Oath.js</h1>
+    <nav>
+      <li><a href="#introduction">Introduction</a></li>
+      <li>
+        <a href="#documentation">Documentation</a>
+        <nav>
+          <li><a href="#using-oath">Using Oath</a></li>
+          <li><a href="#arguments">Arguments</a></li>
+          <li><a href="#all">all()</a></li>
+          <li><a href="#any">any()</a></li>
+          <li><a href="#filter">filter()</a></li>
+          <li><a href="#first">first()</a></li>
+          <li><a href="#map">map()</a></li>
+          <li><a href="#rateLimit">rateLimit()</a></li>
+        </nav>
+      </li>
+    </nav>
+  </header>
+  <main>
+    <h1 id="introduction">Welcome</h1>
+
+    <p>Oath.js is a utility toolbelt for working with Promises in JavaScript. It can accept any Promises/A+-compliant promise object to any one of its methods.</p>
+
+    <p><a href="https://travis-ci.org/mattbasta/oath"><img src="https://travis-ci.org/mattbasta/oath.svg?branch=master" alt="Travis CI Build"></a></p>
+
+
+    <h2 id="documentation">Documentation</h2>
+
+    <h3 id="using-oath">Using Oath</h3>
+
+    <p>Oath is simple enough to use. First, make sure Oath is installed:</p>
+
+    <pre class="inline"><code class="bash">npm install oathjs</code></pre>
+
+    <p>From your JavaScript, you can include Oath by simple <code>require()</code>ing it:</p>
+
+    <pre class="inline"><code class="js">var oath = require('oathjs');</code></pre>
+
+    <h3 id="arguments"><code>Arguments</code></h3>
+
+    <p>Some methods, like <a href="#all"><code>all()</code></a>, accept only an array of promises. For any of these methods, either of the following two options are available:</p>
+
+    <ol>
+      <li>An array of promises is accepted as the first argument.</li>
+      <li>An indefinite number of arguments are accepted, where each argument is a single promise.</li>
+    </ol>
+
+    <h3 id="all"><code>all()</code></h3>
+
+    <p>This method is a pass-through to the specced <code>Promise.all()</code> method. It accepts an array of promises. If all of the promises resolve, this method will resolve with an array containing the fulfilled values of each of the promises. If any of the promises reject, this method will reject with the reason provided by the first promise to reject.</p>
+
+    <h3 id="any"><code>any()</code></h3>
+
+    <p>This method is the opposite of <a href="#all"><code>all()</code></a>. It accepts an array of promises. When any of the passed promises resolve, this method will resolve with the value provided by the passed promise. If all of the passed promises reject, this method will reject.</p>
+
+    <p>Note that this method is different from <a href="#first"><code>first()</code></a> in that it will not reject when the first passed promise rejects. Instead, it will only reject when <em>all</em> passed promises reject.</p>
+
+    <h3 id="filter"><code>filter()</code></h3>
+
+    <p><code>filter()</code> accepts three arguments:</p>
+
+    <ul>
+      <li><code>arr</code>: An array of promises</li>
+      <li><code>iterator</code>: A function to process the fulfilled value of each promise with</li>
+      <li><code>context</code>: Optional value to pass as the context to <code>iterator</code></li>
+    </ul>
+
+    <p>After each of the promises passed in <code>arr</code> resolves, the fulfilled value of each promise will be passed to <code>iterator</code>. If <code>iterator</code> returns a falsey value for any input, the value returned by the corresponding promise will be excluded from the final fulfilled value of the method. When all passed promises have resolved, the method will resolve with an array containing all values which <code>iterator</code> returned a truthy value for. The order of the values relative to their respective promises is preserved.</p>
+
+    <p>If any of the passed promises reject, the method will reject.</p>
+
+    <h3 id="first"><code>first()</code></h3>
+
+    <pre><code class="js">oath.first(
+    pingHostname1(),
+    pingHostname2(),
+    pingHostname3()
+).then(function(hostname) {
+    console.log(hostname + ' is the fastest');
+}, function() {
+    console.warn('The connection may be flaky');
+});</code></pre>
+
+    <p>Aliased to <code>race()</code>, as well.</p>
+
+    <p>This method accepts an array of promises. When any passed promise resolves or rejects, this method will resolve or reject with the same value or reason.</p>
+
+    <h3 id="map"><code>map()</code></h3>
+
+    <pre><code class="js">oath.map(
+    [getPublicPosts(), getPrivatePosts(), getFriendsPosts()],
+    function(posts) {
+        // This will be called immediately for each passed promise
+        // rather than after all promises have resolved.
+        return posts.postData;
+    }
+).then(processAllPostData);</code></pre>
+
+    <p><code>map()</code> accepts three arguments:</p>
+
+    <ul>
+      <li><code>arr</code>: An array of promises</li>
+      <li><code>iterator</code>: A function to process the fulfilled value of each promise with</li>
+      <li><code>context</code>: Optional value to pass as the context to <code>iterator</code></li>
+    </ul>
+
+    <p>If any of the passed promises reject, the method will reject with the passed promise's reason for rejection.</p>
+
+    <p>Functionally, <code>map()</code> will behave in the following way:</p>
+
+    <pre class="inline"><code class="js">Promise.all(arr).map(iterator, context);</code></pre>
+
+    <p>The difference, however, is two-fold:</p>
+
+    <ol>
+      <li><code>iterator</code> can return promises.</li>
+      <li><code>map()</code> will process <code>iterator</code> as soon as each of the passed promises resolve, resulting in improved performance.</li>
+    </ol>
+
+    <p>The improved performance is due to the fact that the mapping process does not need to wait until all of the passed promises resolve. Instead, the fulfilled values are processed immediately and concurrently. This is especially true with asynchronous APIs.</p>
+
+    <h3 id="rateLimit"><code>rateLimit()</code></h3>
+
+    <pre><code class="js">oath.rateLimit(2, [
+    uploadFile('favicon.ico'),
+    uploadFile('nope.gif'),
+    uploadFile('oh_snap.jpg'),
+    uploadFile('trololo.mp3')
+]).then(function() {
+    console.log('upload complete');
+});</code></pre>
+
+    <p><code>rateLimit()</code> accepts three arguments:</p>
+
+    <ul>
+      <li><code>limit</code>: The maximum number of simultaneously executing promises</li>
+      <li><code>arr</code>: An array of closures that return promises</li>
+      <li><code>rejectShouldAbort</code>: Boolean indicating whether a rejected promise should abort the process</li>
+    </ul>
+
+    <p>When called, <code>rateLimit</code> will shift closures from <code>arr</code> until <code>limit</code> has been reached. At that point, it will wait for the executing promises to resolve. When one or more of the promises resolve, the process of shifting closures will continue until all closures have been processed.</p>
+
+    <p>If any promise returned by a closure rejects, it will be ignored unless <code>rejectShouldAbort</code> is truthy. If <code>rejectShouldAbort</code> is truthy, the rejection reason of the rejected promise will be passed as the rejection reason for <code>rateLimit</code>.</p>
+
+  </main>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

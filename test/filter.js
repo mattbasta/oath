@@ -46,7 +46,7 @@ describe('filter', function() {
         });
     });
 
-    it('should omit rejected values', function(done) {
+    it('should reject when any passed promise rejects', function(done) {
         oath.filter(
             [
                 oath.getResolved(1),
@@ -54,12 +54,11 @@ describe('filter', function() {
                 oath.getResolved(3),
                 oath.getResolved(4)
             ],
-            function(input) {
-                return input % 2 == 0;
+            function() {
+                return true;
             }
-        ).then(function(val) {
-            assert.equal(val.length, 1);
-            assert.equal(val[0], 4);
+        ).then(null, function(val) {
+            assert.equal(val, 2);
             done();
         });
     });

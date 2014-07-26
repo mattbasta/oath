@@ -115,11 +115,12 @@ exports.filter = function(arr, iterator, context) {
         arr.forEach(function(prom, i) {
             prom = prom.then(function(val) {
                 return results[i] = val;
-            }).then(iterator).then(function(val) {
-                if (val === false) return;
-                resMap[i] = true;
+            }, reject).then(iterator).then(function(val) {
+                if (val !== false) {
+                    resMap[i] = true;
+                }
             });
-            _always(prom).then(function() {
+            _always(prom).then(function(val) {
                 if (++completed !== len) return;
                 resolve(results.filter(function(_, i) {
                     return resMap[i];

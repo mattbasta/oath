@@ -113,9 +113,11 @@ li code {
           <li><a href="#using-oath">Using Oath</a></li>
           <li><a href="#arguments">Arguments</a></li>
           <li><a href="#all">all()</a></li>
+          <li><a href="#always">always()</a></li>
           <li><a href="#any">any()</a></li>
           <li><a href="#filter">filter()</a></li>
           <li><a href="#first">first()</a></li>
+          <li><a href="#ignore">ignore()</a></li>
           <li><a href="#map">map()</a></li>
           <li><a href="#rateLimit">rateLimit()</a></li>
         </nav>
@@ -155,6 +157,17 @@ li code {
 
     <p>This method is a pass-through to the specced <code>Promise.all()</code> method. It accepts an array of promises. If all of the promises resolve, this method will resolve with an array containing the fulfilled values of each of the promises. If any of the promises reject, this method will reject with the reason provided by the first promise to reject.</p>
 
+    <h3 id="always"><code>always()</code></h3>
+
+    <p>This method accepts one argument:</p>
+
+    <ul>
+      <li><code>prom</code>: A promise</li>
+    </ul>
+
+    <p>When the passed promise resolves, this method will resolve with the passed promise's fulfilled value. When the passed promise rejects, this method will resolve with the passed promise's rejection reason.</p>
+
+
     <h3 id="any"><code>any()</code></h3>
 
     <p>This method is the opposite of <a href="#all"><code>all()</code></a>. It accepts an array of promises. When any of the passed promises resolve, this method will resolve with the value provided by the passed promise. If all of the passed promises reject, this method will reject.</p>
@@ -171,7 +184,7 @@ li code {
       <li><code>context</code>: Optional value to pass as the context to <code>iterator</code></li>
     </ul>
 
-    <p>After each of the promises passed in <code>arr</code> resolves, the fulfilled value of each promise will be passed to <code>iterator</code>. If <code>iterator</code> returns a falsey value for any input, the value returned by the corresponding promise will be excluded from the final fulfilled value of the method. When all passed promises have resolved, the method will resolve with an array containing all values which <code>iterator</code> returned a truthy value for. The order of the values relative to their respective promises is preserved.</p>
+    <p>After each of the promises passed in <code>arr</code> resolves, the fulfilled value of each promise will be passed to <code>iterator</code>. If <code>iterator</code> returns <code>false</code> for any input, the value returned by the corresponding promise will be excluded from the final fulfilled value of the method. When all passed promises have resolved, the method will resolve with an array containing all values which <code>iterator</code> returned a truthy value for. The order of the values relative to their respective promises is preserved.</p>
 
     <p>If any of the passed promises reject, the method will reject.</p>
 
@@ -190,6 +203,19 @@ li code {
     <p>Aliased to <code>race()</code>, as well.</p>
 
     <p>This method accepts an array of promises. When any passed promise resolves or rejects, this method will resolve or reject with the same value or reason.</p>
+
+    <h3 id="ignore"><code>ignore()</code></h3>
+
+    <pre><code class="js">setUpEnvironment().then(
+    // Ignore promises that reject
+    oath.ignore(
+        tryToRefreshEmail(),
+        updateRSSFeeds(),
+        downloadNewCalendarEvents()
+    )
+).then(unlockUI);</code></pre>
+
+    <p>This method accepts an array of promises. Rejected promises are ignored. When all passed promises have either resolved or rejected, this method will resolve with an array containing all fulfilled values of each of the passed promises that resolved. The relative ordering of the values is preserved.</p>
 
     <h3 id="map"><code>map()</code></h3>
 

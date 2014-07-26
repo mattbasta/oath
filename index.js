@@ -96,22 +96,10 @@ exports.rateLimit = function(limit, arr, rejectShouldAbort) {
 };
 
 exports.map = function(arr, iterator, context) {
-    var len = arr.length;
-    var resolved = 0;
-
     if (context) iterator = iterator.bind(context);
-
-    var results = [];
-    return new Promise(function(resolve, reject) {
-        arr.forEach(function(prom, i) {
-            prom.then(iterator).then(function(val) {
-                results[i] = val;
-                if (++resolved === len) {
-                    resolve(results);
-                }
-            }, reject);
-        });
-    });
+    return Promise.all(arr.map(function(prom) {
+        return prom.then(iterator);
+    }));
 };
 
 exports.filter = function(arr, iterator, context) {

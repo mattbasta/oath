@@ -157,3 +157,42 @@ var _always = exports.always = function(promise) {
         promise.then(res, res);
     });
 }
+
+
+var CancellablePromise = exports.CancellablePromise = function(func) {
+    var cancelled = false;
+    var pending = true;
+    var cancelCallbacks = [];
+    function passThrough(handler) {
+        return function() {
+            if (cancelled && pending) {
+                return;
+            }
+            pending = false;
+            handler.apply(this, arguments);
+        };
+    }
+    Promise.call(this, function(resolve, reject) {
+        func.call(
+            this,
+            passThrough(resolve),
+            passThrough(reject),
+            function(callback, context) {
+                cancelCallbacks.push([callback, context]);
+            }
+        );
+    });
+    this.cancel = function() {
+        if (cancelled || !pending) {
+            return;
+        }
+        cancelled = true;
+        for (var i = 0; i < cancelCallbacks.length; i++) {
+            cancelCallbacks[i][0].call(cancelCallbacks[i][1]);
+        }
+    };
+};
+
+CancellablePromise.prototype = Object.create(Promise.prototype);
+CancellablePromise.constructor = Promise;
+

@@ -115,6 +115,7 @@ li code {
           <li><a href="#all">all()</a></li>
           <li><a href="#always">always()</a></li>
           <li><a href="#any">any()</a></li>
+          <li><a href="#CancellablePromise">CancellablePromise()</a></li>
           <li><a href="#filter">filter()</a></li>
           <li><a href="#first">first()</a></li>
           <li><a href="#ignore">ignore()</a></li>
@@ -175,6 +176,25 @@ li code {
     <p>This method is the opposite of <a href="#all"><code>all()</code></a>. It accepts an array of promises. When any of the passed promises resolve, this method will resolve with the value provided by the passed promise. If all of the passed promises reject, this method will reject.</p>
 
     <p>Note that this method is different from <a href="#first"><code>first()</code></a> in that it will not reject when the first passed promise rejects. Instead, it will only reject when <em>all</em> passed promises reject.</p>
+
+
+    <h3 id="CancellablePromise"><code>CancellablePromise()</code></h3>
+
+    <pre><code class="js">var request = new oath.CancellablePromise(function(resolve, reject, cancelCallback) {
+    var xhr = require('xhr').get(url);
+    xhr.onload = resolve;
+    xhr.onerror = reject;
+    cancelCallback(xhr.abort, xhr); // Second argument is context
+});
+
+var timeout = setTimeout(request.cancel, 30000);
+oath.always(request).then(clearTimeout.bind(null, timeout));</code></pre>
+
+    <p>A cancellable promise is a promise that can be "turned off". It extends a normal promise, having identical behavior, except it has a <code>cancel()</code> method. This method, when called, will cause the reject and resolve methods of the promise to noop.</p>
+
+    <p>Additionally, a third argument is passed to the promise's handler. This third argument is a function that can be called to set handlers for cancellation. When the promise is cancelled, each of the functions passed to the cancellation callback will be fired in the order that they were passed. An optional second argument can be provided for context.</p>
+
+    <p>Cancellable promises can only be cancelled a single time. If the promise is not pending, it cannot be cancelled.</p>
 
     <h3 id="filter"><code>filter()</code></h3>
 

@@ -14,10 +14,10 @@ var oath = require('oathjs');
 
 // Pass functions that return promises to rate limit
 oath.rateLimit(2, [
-    uploadFile('favicon.ico'),
-    uploadFile('nope.gif'),
-    uploadFile('oh_snap.jpg'),
-    uploadFile('trololo.mp3')
+    uploadFile.bind(null, 'favicon.ico'),
+    uploadFile.bind(null, 'nope.gif'),
+    uploadFile.bind(null, 'oh_snap.jpg'),
+    uploadFile.bind(null, 'trololo.mp3')
 ]).then(function() {
     console.log('upload complete');
 });
@@ -35,14 +35,14 @@ oath.first(
 });
 
 
-setUpEnvironment().then(
+setUpEnvironment().then(function() {
     // Ignore promises that reject
-    oath.ignore(
+    return oath.ignore(
         tryToRefreshEmail(),
         updateRSSFeeds(),
         downloadNewCalendarEvents()
     )
-).then(unlockUI);
+}).then(unlockUI);
 
 
 // Perform data processing immediately
